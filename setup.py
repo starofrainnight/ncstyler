@@ -55,5 +55,8 @@ setup(
     install_requires=our_requires,
     package_dir = {"": source_dir},
     packages=our_packages,
+    entry_points = {
+        'console_scripts': ['ncstyler=ncstyler.console:main'],
+    },
     zip_safe=False, # Unpack the egg downloaded_file during installation.
     )
