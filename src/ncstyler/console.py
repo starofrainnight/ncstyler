@@ -53,6 +53,27 @@ class Application(object):
         result["parameters"] = parameters
         return result
 
+    def _get_config(self, name):
+        override_table = {
+                "function_argument_name": "argument_name",
+                "class_function_argument_name": "function_argument_name",
+                "struct_function_argument_name": "function_argument_name",
+                "define_function_argument_name": "function_argument_name",
+                "class_variant_name": "variant_name",
+                "struct_variant_name": "variant_name",
+            }
+
+        my_config = dict()
+        if name in self.__config:
+            my_config = self.__config[name]
+
+        overrided_config = my_config
+        if name in override_table:
+            base_name = override_table[name]
+            overrided_config = self._get_config(base_name).update(my_config)
+
+        return overrided_config
+
     def exec_(self):
         parsed_info = CppHeaderParser.CppHeader(self.__args.file_path)
         defines = []
