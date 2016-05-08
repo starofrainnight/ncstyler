@@ -3,6 +3,7 @@
 import argparse
 import CppHeaderParser
 import re
+import yaml
 
 class CppDefine(dict):
     def __init__(self):
@@ -21,6 +22,9 @@ class Application(object):
         code'''
 
         parser = argparse.ArgumentParser(description=description)
+        parser.add_argument("-c", "--config",
+            help="Configuration file path (In YAML format)",
+            required=True)
         parser.add_argument("-o", "--output", help="Output file path")
         parser.add_argument("file_path", help="Source file path")
 
@@ -30,6 +34,8 @@ class Application(object):
         # path
         if self.__args.output is None:
             self.__args.output = self.__args.file_path
+
+        self.__config = yaml.load(open(self.__args.config))
 
     def parse_define(self, adefine):
         matched = re.match(r"[^\w]*(\w+)(?:\((.*)\)|\s).*", adefine)
