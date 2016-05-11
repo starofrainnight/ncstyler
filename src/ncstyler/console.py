@@ -59,6 +59,9 @@ class Application(object):
                 "class_function_argument_name": "function_argument_name",
                 "struct_function_argument_name": "function_argument_name",
                 "define_function_argument_name": "function_argument_name",
+                "define_function_name": "function_name",
+                "class_function_name": "function_name",
+                "struct_function_name": "function_name",
                 "class_variant_name": "variant_name",
                 "struct_variant_name": "variant_name",
             }
