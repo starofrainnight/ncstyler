@@ -4,6 +4,7 @@ import argparse
 import CppHeaderParser
 import re
 import yaml
+import copy
 
 class CppDefine(dict):
     def __init__(self):
@@ -68,7 +69,7 @@ class Application(object):
 
         my_config = dict()
         if name in self.__config:
-            my_config = self.__config[name]
+            my_config = copy.deepcopy(self.__config[name])
 
         overrided_config = my_config
         if name in override_table:
