@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-from rabird_bootstrap import use_rabird
-use_rabird()
-    
+from pydgutils_bootstrap import use_pydgutils
+use_pydgutils()
+
 import os
 import os.path
 import sys
@@ -16,12 +16,13 @@ from six.moves import urllib
 import math
 import rabird.core.distutils
 import rabird.core.logging
+import pydgutils
 from setuptools import setup, find_packages
 
 package_name = 'ncstyler'
 
 # Convert source to v2.x if we are using python 2.x.
-source_dir = rabird.core.distutils.preprocess_source()
+source_dir = pydgutils.process()
 
 # Exclude the original source package, only accept the preprocessed package!
 our_packages = find_packages(where=source_dir)
@@ -41,15 +42,15 @@ setup(
     author_email="starofrainnight@gmail.com",
     url="https://github.com/starofrainnight/%s" % package_name,
     description="Name Conventions Styler, a styler just target to naming conventions of source codes",
-    long_description=long_description,    
+    long_description=long_description,
     classifiers=[
         "Development Status :: 3 - Alpha",
-        "Intended Audience :: Developers",        
+        "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: Microsoft :: Windows", 
+        "Operating System :: Microsoft :: Windows",
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: Implementation :: CPython",        
+        "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Libraries",
     ],
     install_requires=our_requires,

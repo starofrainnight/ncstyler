@@ -1,7 +1,7 @@
 '''
 The MIT License (MIT)
 
-Copyright (c) 2007 ~ 2015, Hong-She Liang <starofrainnight@gmail.com>. 
+Copyright (c) 2016, Hong-She Liang <starofrainnight@gmail.com>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,9 @@ THE SOFTWARE.
 '''
 
 '''
-Bootstrap rabird setup environment
+Bootstrap pydgutils setup environment
 
-@date 2015-08-20
+@date 2016-05-31
 @author Hong-She Liang <starofrainnight@gmail.com>
 '''
 
@@ -148,7 +148,7 @@ def get_best_downloader():
     for dl in downloaders:
         if dl.viable():
             return dl
-        
+
 def download(url):
     downloader = get_best_downloader()
     downloader(url, os.path.basename(url))
@@ -159,34 +159,19 @@ def use_pip():
     except:
         import os
         import sys
-        
+
         # If we do not have pip, we fetch and install one. It will also install
-        # setuptools and wheel. 
+        # setuptools and wheel.
         url = "https://bootstrap.pypa.io/get-pip.py"
         filename = os.path.basename(url)
         download(url)
         os.system("%s %s" % (sys.executable, filename))
-        
-def use_rabird():
+
+def use_pydgutils():
     try:
-        import rabird.core
+        import pydgutils
     except:
-        use_pip()    
+        use_pip()
         import pip
-        pip.main(["install", "rabird.core"])
-        
-        module_dirs = "rabird/core/__init__.py"         
-        for apath in sys.path:
-            module_path = os.path.join(apath, module_dirs)
-            if os.path.exists(module_path) and os.path.isfile(module_path):
-                # Generate empty __init__.py into rabird/, an ugly fix 
-                # for can't find rabird.core module during installation.
-                #
-                # Because there does not have any __init__.py in the 
-                # namespace directory and we can't import it immediately
-                # after pip installed in the same process, so we added 
-                # an empty __init__.py into rabird/ namespace directory
-                # for satisfy it.
-                afile = open(os.path.join(os.path.dirname(os.path.dirname(module_path)), "__init__.py"), "wb")
-                afile.close()
-                break
+        pip.main(["install", "pydgutils"])
+
