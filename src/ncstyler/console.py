@@ -56,27 +56,27 @@ class Application(object):
 
     def _get_config(self, name):
         override_table = {
-                "function_argument_name": "argument_name",
-                "class_function_argument_name": "function_argument_name",
-                "struct_function_argument_name": "function_argument_name",
-                "define_function_argument_name": "function_argument_name",
-                "define_function_name": "function_name",
-                "class_function_name": "function_name",
-                "struct_function_name": "function_name",
-                "class_variant_name": "variant_name",
-                "struct_variant_name": "variant_name",
+                "function_argument": "argument",
+                "class_function_argument": "function_argument",
+                "struct_function_argument": "function_argument",
+                "define_function_argument": "function_argument",
+                "define_function": "function",
+                "class_function": "function",
+                "struct_function": "function",
+                "class_variant": "variant",
+                "struct_variant": "variant",
             }
 
         my_config = dict()
-        if name in self.__config:
-            my_config = copy.deepcopy(self.__config[name])
 
-        overrided_config = my_config
         if name in override_table:
             base_name = override_table[name]
-            overrided_config = self._get_config(base_name).update(my_config)
+            my_config = copy.deepcopy(self._get_config(base_name))
 
-        return overrided_config
+        if name in self.__config:
+            my_config.update(self.__config[name])
+
+        return my_config
 
     def exec_(self):
         parsed_info = CppHeaderParser.CppHeader(self.__args.file_path)
@@ -84,6 +84,19 @@ class Application(object):
         for define_text in parsed_info.defines:
             adefine = self.parse_define(define_text)
             defines.append(adefine)
+
+        # Verify Define Names
+        define_re = self._get_config("define")["re"]
+        define_function_re = self._get_config("define_function")["re"]
+        for adefine in defines:
+            if len(adefine["parameters"]) <= 0:
+                # Normal Define Name
+                if re.match(define_re, adefine["name"]) is None:
+                    raise SyntaxError()
+            else:
+                # Function Liked Define Name
+                if re.match(define_function_re, adefine["name"]) is None:
+                    raise SyntaxError()
 
 def main():
     a = Application()
