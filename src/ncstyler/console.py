@@ -6,6 +6,7 @@ import re
 import yaml
 import copy
 import six
+import os.path
 
 class CppDefine(dict):
     def __init__(self):
@@ -19,6 +20,11 @@ class CppDefineParameter(dict):
         self["line_number"] = -1
 
 class CppNamespace(dict):
+    def __init__(self):
+        self["name"] = None
+        self["line_number"] = -1
+
+class CppFileName(dict):
     def __init__(self):
         self["name"] = None
         self["line_number"] = -1
@@ -69,6 +75,7 @@ class Application(object):
                 "variant": "_base_",
                 "namespace": "_base_",
                 "define": "_base_",
+                "filename": "_base_", # Special config use to define filename rule
 
                 "argument": "variant",
                 "static_variant": "variant",
@@ -167,8 +174,17 @@ class Application(object):
         elif cpp_object_type == CppNamespace:
             self._validate_name(cpp_object, "namespace")
 
+        elif cpp_object_type == CppFileName:
+            self._validate_name(cpp_object, "filename")
+
     def exec_(self):
         parsed_info = CppHeaderParser.CppHeader(self.__args.file_path)
+
+        # Verify File Names
+        filename = os.path.basename(self.__args.file_path)
+        cpp_object = CppFileName()
+        cpp_object["name"] = filename
+        self._validate_cpp_object(cpp_object)
 
         # Verify Define Names
         for define_text in parsed_info.defines:
