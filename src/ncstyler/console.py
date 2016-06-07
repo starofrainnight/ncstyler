@@ -58,14 +58,15 @@ class Application(object):
         override_table = {
                 "function_argument": "argument",
                 "class_method_argument": "function_argument",
-                "struct_method_argument": "function_argument",
+                "struct_method_argument": "class_method_argument",
                 "define_function_argument": "function_argument",
                 "define_function": "function",
                 "class_method": "function",
-                "struct_method": "function",
+                "struct_method": "class_method",
                 "class_variant": "variant",
-                "struct_variant": "variant",
+                "struct_variant": "class_variant",
                 "typdef": "class",
+                "struct": "class",
             }
 
         my_config = dict()
