@@ -200,6 +200,10 @@ class Application(object):
         for define_text in parsed_info.defines:
             self._validate_cpp_object(self.parse_define(define_text))
 
+        # Verify Function Names
+        for cpp_object in parsed_info.functions:
+            self._validate_cpp_object(cpp_object)
+
         # Verify Class Names
         for cpp_object in parsed_info.classes_order:
             self._validate_cpp_object(cpp_object)
