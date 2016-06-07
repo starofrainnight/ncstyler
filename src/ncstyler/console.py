@@ -65,6 +65,7 @@ class Application(object):
                 "struct_method": "function",
                 "class_variant": "variant",
                 "struct_variant": "variant",
+                "typdef": "class",
             }
 
         my_config = dict()
