@@ -88,7 +88,7 @@ class Application(object):
             cpp_object_name = cpp_object["name"]
 
         matched = re.match(self._get_config(re_name)["re"], cpp_object_name)
-        if matched:
+        if matched is None:
             raise SyntaxError()
 
     def _validate_cpp_object(self, cpp_object):
@@ -110,7 +110,7 @@ class Application(object):
             for access_specifier in CppHeaderParser.supportedAccessSpecifier:
                 for aproperty in cpp_object["properties"]:
                     self._validate_name(aproperty, "class_variant")
-         elif cpp_object_type == CppHeaderParser.CppStruct:
+        elif cpp_object_type == CppHeaderParser.CppStruct:
             self._validate_name(cpp_object, "struct")
 
     def exec_(self):
