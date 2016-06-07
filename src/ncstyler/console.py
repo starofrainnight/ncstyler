@@ -104,6 +104,7 @@ class Application(object):
             for amethod in aclass.get_all_methods():
                 self._validate_name(amethod, "class_method")
 
+        # Verify Struct Names
         for cpp_object in parsed_info.structs:
             self._validate_name(cpp_object, "struct")
 
