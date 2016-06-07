@@ -67,6 +67,7 @@ class Application(object):
                 "struct_variant": "class_variant",
                 "typdef": "class",
                 "struct": "class",
+                "union": "struct",
             }
 
         my_config = dict()
@@ -126,6 +127,15 @@ class Application(object):
             for amember in cpp_object["values"]:
                 self._validate_name(amember, "enum_value")
 
+        elif cpp_object_type == CppHeaderParser.CppVariable:
+            self._validate_name(cpp_object, "variant")
+
+        elif cpp_object_type == CppHeaderParser.CppMethod:
+            self._validate_name(cpp_object, "function")
+
+        elif cpp_object_type == CppHeaderParser.CppUnion:
+            self._validate_name(cpp_object, "union")
+
     def exec_(self):
         parsed_info = CppHeaderParser.CppHeader(self.__args.file_path)
 
@@ -139,6 +149,14 @@ class Application(object):
 
         # Verify Struct Names
         for cpp_object in parsed_info.structs:
+            self._validate_cpp_object(cpp_object)
+
+        # Verify Enum Names
+        for cpp_object in parsed_info.enums:
+            self._validate_cpp_object(cpp_object)
+
+        # Verify Variable Names
+        for cpp_object in parsed_info.variables:
             self._validate_cpp_object(cpp_object)
 
 def main():
