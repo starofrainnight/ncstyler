@@ -175,11 +175,11 @@ class Application(object):
             self._validate_cpp_object(self.parse_define(define_text))
 
         # Verify Class Names
-        for class_name in parsed_info.classes:
-            self._validate_cpp_object(parsed_info.classes[class_name])
+        for cpp_object in parsed_info.classes_order:
+            self._validate_cpp_object(cpp_object)
 
         # Verify Struct Names
-        for cpp_object in parsed_info.structs:
+        for cpp_object in parsed_info.structs_order:
             self._validate_cpp_object(cpp_object)
 
         # Verify Enum Names
