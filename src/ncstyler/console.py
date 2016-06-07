@@ -120,6 +120,12 @@ class Application(object):
         elif cpp_object_type == CppHeaderParser.CppStruct:
             self._validate_name(cpp_object, "struct")
 
+        elif cpp_object_type == CppHeaderParser.CppEnum:
+            self._validate_name(cpp_object, "enum")
+
+            for amember in cpp_object["values"]:
+                self._validate_name(amember, "enum_value")
+
     def exec_(self):
         parsed_info = CppHeaderParser.CppHeader(self.__args.file_path)
 
