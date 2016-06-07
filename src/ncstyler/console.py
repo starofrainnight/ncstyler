@@ -5,6 +5,7 @@ import CppHeaderParser
 import re
 import yaml
 import copy
+import six
 
 class CppDefine(dict):
     def __init__(self):
@@ -96,7 +97,7 @@ class Application(object):
 
     def _validate_name(self, cpp_object, re_name):
         cpp_object_name = ""
-        if cpp_object is str:
+        if isinstance(cpp_object, six.string_types):
             cpp_object_name = cpp_object
         else:
             cpp_object_name = cpp_object["name"]
@@ -119,12 +120,12 @@ class Application(object):
         elif cpp_object_type == CppHeaderParser.CppClass:
             self._validate_name(cpp_object, "class")
 
-            for amethod in aclass.get_all_methods():
+            for amethod in cpp_object.get_all_methods():
                 self._validate_name(amethod, "class_method")
 
             for access_specifier in CppHeaderParser.supportedAccessSpecifier:
                 for amember in cpp_object["properties"][access_specifier]:
-                    if cpp_object["static"]:
+                    if amember["static"]:
                         self._validate_name(amember, "static_variant")
                     else:
                         self._validate_name(amember, "class_variant")
@@ -166,8 +167,8 @@ class Application(object):
             self._validate_cpp_object(self.parse_define(define_text))
 
         # Verify Class Names
-        for cpp_object in parsed_info.classes:
-            self._validate_cpp_object(cpp_object)
+        for class_name in parsed_info.classes:
+            self._validate_cpp_object(parsed_info.classes[class_name])
 
         # Verify Struct Names
         for cpp_object in parsed_info.structs:
