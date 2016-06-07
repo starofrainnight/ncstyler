@@ -56,6 +56,13 @@ class Application(object):
 
     def _get_config(self, name):
         override_table = {
+                "_base_": "[a-zA-Z0-9_]+",
+                "class": "_base_",
+                "function": "_base_",
+                "variant": "_base_",
+                "namespace": "_base_",
+
+                "argument": "variant",
                 "function_argument": "argument",
                 "class_method_argument": "function_argument",
                 "struct_method_argument": "class_method_argument",
@@ -67,6 +74,7 @@ class Application(object):
                 "struct_variant": "class_variant",
                 "typdef": "class",
                 "struct": "class",
+                "enum": "class",
                 "union": "struct",
             }
 
