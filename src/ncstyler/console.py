@@ -198,7 +198,7 @@ class Application(object):
             cpp_object["name"] = namespace
             self._validate_cpp_object(cpp_object)
 
-        for cpp_object in parsed_info.typedefs_order:
+        for cpp_object in parsed_info.typedefs:
             self._validate_cpp_object(cpp_object)
 
 def main():
