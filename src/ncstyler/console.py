@@ -57,12 +57,12 @@ class Application(object):
     def _get_config(self, name):
         override_table = {
                 "function_argument": "argument",
-                "class_function_argument": "function_argument",
-                "struct_function_argument": "function_argument",
+                "class_method_argument": "function_argument",
+                "struct_method_argument": "function_argument",
                 "define_function_argument": "function_argument",
                 "define_function": "function",
-                "class_function": "function",
-                "struct_function": "function",
+                "class_method": "function",
+                "struct_method": "function",
                 "class_variant": "variant",
                 "struct_variant": "variant",
             }
