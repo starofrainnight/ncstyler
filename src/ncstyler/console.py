@@ -191,9 +191,12 @@ class Application(object):
             self._validate_cpp_object(cpp_object)
 
         for namespace in parsed_info.namespaces:
-            namespace_object = CppNamespace()
-            namespace_object["name"] = namespace
-            self._validate_cpp_object(namespace_object)
+            cpp_object = CppNamespace()
+            cpp_object["name"] = namespace
+            self._validate_cpp_object(cpp_object)
+
+        for cpp_object in parsed_info.typedefs_order:
+            self._validate_cpp_object(cpp_object)
 
 def main():
     a = Application()
