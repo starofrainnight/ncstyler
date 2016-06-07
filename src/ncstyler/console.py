@@ -65,6 +65,8 @@ class Application(object):
                 "define": "_base_",
 
                 "argument": "variant",
+                "static_variant": "variant",
+                "global_variant": "variant",
                 "function_argument": "argument",
                 "class_method_argument": "function_argument",
                 "struct_method_argument": "class_method_argument",
@@ -122,7 +124,10 @@ class Application(object):
 
             for access_specifier in CppHeaderParser.supportedAccessSpecifier:
                 for amember in cpp_object["properties"][access_specifier]:
-                    self._validate_name(amember, "class_variant")
+                    if cpp_object["static"]:
+                        self._validate_name(amember, "static_variant")
+                    else:
+                        self._validate_name(amember, "class_variant")
 
                 for amember in cpp_object["structs"][access_specifier]:
                     self._validate_cpp_object(amember, "struct")
@@ -140,7 +145,10 @@ class Application(object):
                 self._validate_name(amember, "enum_value")
 
         elif cpp_object_type == CppHeaderParser.CppVariable:
-            self._validate_name(cpp_object, "variant")
+            if cpp_object["static"]:
+                self._validate_name(cpp_object, "static_variant")
+            else:
+                self._validate_name(cpp_object, "global_variant")
 
         elif cpp_object_type == CppHeaderParser.CppMethod:
             self._validate_name(cpp_object, "function")
