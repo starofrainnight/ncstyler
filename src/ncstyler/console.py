@@ -106,6 +106,10 @@ class Application(object):
             for amethod in aclass.get_all_methods():
                 self._validate_name(amethod, "class_method")
 
+            for access_specifier in CppHeaderParser.supportedAccessSpecifier:
+                for aproperty in cpp_object["properties"]:
+                    self._validate_name(aproperty, "class_variant")
+
         # Verify Struct Names
         for cpp_object in parsed_info.structs:
             self._validate_name(cpp_object, "struct")
