@@ -151,7 +151,9 @@ class Application(object):
                 self._validate_name(cpp_object, "global_variant")
 
         elif cpp_object_type == CppHeaderParser.CppMethod:
-            self._validate_name(cpp_object, "function")
+            # Exclude "main" function while parsing global function
+            if cpp_object["name"] != "main":
+                self._validate_name(cpp_object, "function")
 
         elif cpp_object_type == CppHeaderParser.CppUnion:
             self._validate_name(cpp_object, "union")
