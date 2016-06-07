@@ -130,17 +130,25 @@ class Application(object):
                 # Function Liked Define Name
                 self._validate_name(cpp_object, "define_function")
         elif cpp_object_type == CppHeaderParser.CppClass:
-            self._validate_name(cpp_object, "class")
+            if "struct" in cpp_object["declaration_method"]:
+                class_re = "struct"
+                class_method_re = "struct_method"
+                class_variant_re = "struct_variant"
+            else:
+                class_re = "class"
+                class_method_re = "class_method"
+                class_variant_re = "class_variant"
+            self._validate_name(cpp_object, class_re)
 
             for amethod in cpp_object.get_all_methods():
-                self._validate_name(amethod, "class_method")
+                self._validate_name(amethod, class_method_re)
 
             for access_specifier in CppHeaderParser.supportedAccessSpecifier:
                 for amember in cpp_object["properties"][access_specifier]:
                     if amember["static"]:
                         self._validate_name(amember, "static_variant")
                     else:
-                        self._validate_name(amember, "class_variant")
+                        self._validate_name(amember, class_variant_re)
 
                 for amember in cpp_object["structs"][access_specifier]:
                     self._validate_cpp_object(amember, "struct")
