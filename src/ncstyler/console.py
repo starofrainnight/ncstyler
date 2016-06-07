@@ -135,15 +135,19 @@ class Application(object):
             if "struct" in cpp_object["declaration_method"]:
                 class_re = "struct"
                 class_method_re = "struct_method"
+                class_method_argument_re = "struct_method_argument"
                 class_variant_re = "struct_variant"
             else:
                 class_re = "class"
                 class_method_re = "class_method"
+                class_method_argument_re = "class_method_argument"
                 class_variant_re = "class_variant"
             self._validate_name(cpp_object, class_re)
 
             for amethod in cpp_object.get_all_methods():
                 self._validate_name(amethod, class_method_re)
+                for aparameter in amethod["parameters"]:
+                    self._validate_name(aparameter, class_method_argument_re)
 
             for access_specifier in CppHeaderParser.supportedAccessSpecifier:
                 for amember in cpp_object["properties"][access_specifier]:
