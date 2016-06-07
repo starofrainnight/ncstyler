@@ -81,26 +81,27 @@ class Application(object):
         return my_config
 
     def _validate_name(self, cpp_object, re_name):
-        matched = re.match(self._get_config(re_name)["re"], cpp_object["name"])
+        cpp_object_name = ""
+        if cpp_object is str:
+            cpp_object_name = cpp_object
+        else:
+            cpp_object_name = cpp_object["name"]
+
+        matched = re.match(self._get_config(re_name)["re"], cpp_object_name)
         if matched:
             raise SyntaxError()
 
-    def exec_(self):
-        parsed_info = CppHeaderParser.CppHeader(self.__args.file_path)
+    def _validate_cpp_object(self, cpp_object):
+        cpp_object_type = type(cpp_object)
 
-        # Verify Define Names
-        for define_text in parsed_info.defines:
-            cpp_object = self.parse_define(define_text)
-
+        if cpp_object_type == CppDefine:
             if len(cpp_object["parameters"]) <= 0:
                 # Normal Define Name
                 self._validate_name(cpp_object, "define")
             else:
                 # Function Liked Define Name
                 self._validate_name(cpp_object, "define_function")
-
-        # Verify Class Names
-        for cpp_object in parsed_info.classes:
+        elif cpp_object_type == CppHeaderParser.CppClass:
             self._validate_name(cpp_object, "class")
 
             for amethod in aclass.get_all_methods():
@@ -109,10 +110,23 @@ class Application(object):
             for access_specifier in CppHeaderParser.supportedAccessSpecifier:
                 for aproperty in cpp_object["properties"]:
                     self._validate_name(aproperty, "class_variant")
+         elif cpp_object_type == CppHeaderParser.CppStruct:
+            self._validate_name(cpp_object, "struct")
+
+    def exec_(self):
+        parsed_info = CppHeaderParser.CppHeader(self.__args.file_path)
+
+        # Verify Define Names
+        for define_text in parsed_info.defines:
+            self._validate_cpp_object(self.parse_define(define_text))
+
+        # Verify Class Names
+        for cpp_object in parsed_info.classes:
+            self._validate_cpp_object(cpp_object)
 
         # Verify Struct Names
         for cpp_object in parsed_info.structs:
-            self._validate_name(cpp_object, "struct")
+            self._validate_cpp_object(cpp_object)
 
 def main():
     a = Application()
