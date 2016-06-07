@@ -108,8 +108,15 @@ class Application(object):
                 self._validate_name(amethod, "class_method")
 
             for access_specifier in CppHeaderParser.supportedAccessSpecifier:
-                for aproperty in cpp_object["properties"]:
-                    self._validate_name(aproperty, "class_variant")
+                for amember in cpp_object["properties"][access_specifier]:
+                    self._validate_name(amember, "class_variant")
+
+                for amember in cpp_object["structs"][access_specifier]:
+                    self._validate_cpp_object(amember, "struct")
+
+                for amember in cpp_object["enums"][access_specifier]:
+                    self._validate_cpp_object(amember, "enum")
+
         elif cpp_object_type == CppHeaderParser.CppStruct:
             self._validate_name(cpp_object, "struct")
 
