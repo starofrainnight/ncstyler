@@ -129,6 +129,8 @@ class Application(object):
             else:
                 # Function Liked Define Name
                 self._validate_name(cpp_object, "define_function")
+                for aparameter in cpp_object["parameters"]:
+                    self._validate_name(aparameter, "define_function_argument")
         elif cpp_object_type == CppHeaderParser.CppClass:
             if "struct" in cpp_object["declaration_method"]:
                 class_re = "struct"
