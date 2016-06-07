@@ -104,11 +104,8 @@ class Application(object):
             for amethod in aclass.get_all_methods():
                 self._validate_name(amethod, "class_method")
 
-        for cpp_object in parsed_info.classes:
-            self._validate_name(cpp_object, "class")
-
-            for amethod in aclass.get_all_methods():
-                self._validate_name(cpp_object, "class_method")
+        for cpp_object in parsed_info.structs:
+            self._validate_name(cpp_object, "struct")
 
 def main():
     a = Application()
