@@ -195,6 +195,7 @@ class Application(object):
             cpp_object["name"] = namespace
             self._validate_cpp_object(cpp_object)
 
+        # Verify Typdef Names
         for cpp_object in parsed_info.typedefs:
             self._validate_cpp_object(cpp_object)
 
