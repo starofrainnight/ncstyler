@@ -78,25 +78,37 @@ class Application(object):
 
         return my_config
 
+    def _validate_name(self, cpp_object, re_name):
+        matched = re.match(self._get_config(re_name)["re"], cpp_object["name"])
+        if matched:
+            raise SyntaxError()
+
     def exec_(self):
         parsed_info = CppHeaderParser.CppHeader(self.__args.file_path)
-        defines = []
-        for define_text in parsed_info.defines:
-            adefine = self.parse_define(define_text)
-            defines.append(adefine)
 
         # Verify Define Names
-        define_re = self._get_config("define")["re"]
-        define_function_re = self._get_config("define_function")["re"]
-        for adefine in defines:
-            if len(adefine["parameters"]) <= 0:
+        for define_text in parsed_info.defines:
+            cpp_object = self.parse_define(define_text)
+
+            if len(cpp_object["parameters"]) <= 0:
                 # Normal Define Name
-                if re.match(define_re, adefine["name"]) is None:
-                    raise SyntaxError()
+                self._validate_name(cpp_object, "define")
             else:
                 # Function Liked Define Name
-                if re.match(define_function_re, adefine["name"]) is None:
-                    raise SyntaxError()
+                self._validate_name(cpp_object, "define_function")
+
+        # Verify Class Names
+        for cpp_object in parsed_info.classes:
+            self._validate_name(cpp_object, "class")
+
+            for amethod in aclass.get_all_methods():
+                self._validate_name(amethod, "class_method")
+
+        for cpp_object in parsed_info.classes:
+            self._validate_name(cpp_object, "class")
+
+            for amethod in aclass.get_all_methods():
+                self._validate_name(cpp_object, "class_method")
 
 def main():
     a = Application()
