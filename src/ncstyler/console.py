@@ -37,6 +37,8 @@ class Application(object):
             self.__args.output = self.__args.file_path
 
         self.__config = yaml.load(open(self.__args.config))
+        if "_base_" not in self.__config:
+            self.__config["_base_"] = {"re":"[a-zA-Z0-9_]+"}
 
     def parse_define(self, adefine):
         matched = re.match(r"[^\w]*(\w+)(?:\((.*)\)|\s).*", adefine)
@@ -56,11 +58,11 @@ class Application(object):
 
     def _get_config(self, name):
         override_table = {
-                "_base_": "[a-zA-Z0-9_]+",
                 "class": "_base_",
                 "function": "_base_",
                 "variant": "_base_",
                 "namespace": "_base_",
+                "define": "_base_",
 
                 "argument": "variant",
                 "function_argument": "argument",
@@ -75,6 +77,7 @@ class Application(object):
                 "typdef": "class",
                 "struct": "class",
                 "enum": "class",
+                "enum_value": "define",
                 "union": "struct",
             }
 
@@ -82,7 +85,7 @@ class Application(object):
 
         if name in override_table:
             base_name = override_table[name]
-            my_config = copy.deepcopy(self._get_config(base_name))
+            my_config.update(self._get_config(base_name))
 
         if name in self.__config:
             my_config.update(self.__config[name])
