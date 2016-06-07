@@ -18,6 +18,11 @@ class CppDefineParameter(dict):
         self["name"] = None
         self["line_number"] = -1
 
+class CppNamespace(dict):
+    def __init__(self):
+        self["name"] = None
+        self["line_number"] = -1
+
 class Application(object):
     def __init__(self):
         description='''A styler just target to naming conventions of source
@@ -159,6 +164,9 @@ class Application(object):
         elif cpp_object_type == CppHeaderParser.CppUnion:
             self._validate_name(cpp_object, "union")
 
+        elif cpp_object_type == CppNamespace:
+            self._validate_name(cpp_object, "namespace")
+
     def exec_(self):
         parsed_info = CppHeaderParser.CppHeader(self.__args.file_path)
 
@@ -181,6 +189,11 @@ class Application(object):
         # Verify Variable Names
         for cpp_object in parsed_info.variables:
             self._validate_cpp_object(cpp_object)
+
+        for namespace in parsed_info.namespaces:
+            namespace_object = CppNamespace()
+            namespace_object["name"] = namespace
+            self._validate_cpp_object(namespace_object)
 
 def main():
     a = Application()
