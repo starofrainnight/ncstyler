@@ -186,9 +186,6 @@ class Application(object):
         for cpp_object in parsed_info.enums:
             self._validate_cpp_object(cpp_object)
 
-        for cpp_object in parsed_info.global_enums:
-            self._validate_cpp_object(cpp_object)
-
         # Verify Variable Names
         for cpp_object in parsed_info.variables:
             self._validate_cpp_object(cpp_object)
