@@ -116,7 +116,7 @@ class Application(object):
 
         matched = re.match(self._get_config(re_name)["re"], cpp_object_name)
         if matched is None:
-            raise SyntaxError("%s: Object '%s' not matched with %s name rule!" % (
+            raise SyntaxError("%s: Name '%s' isn't matched with rule : %s!" % (
                 cpp_object["line_number"], cpp_object_name, re_name))
 
     def _validate_cpp_object(self, cpp_object):
