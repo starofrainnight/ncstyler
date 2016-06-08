@@ -111,25 +111,25 @@ class Application(object):
 
         return my_config
 
-    def _validate_name(self, cpp_object, re_name):
+    def _validate_name(self, cpp_object, name_re):
         cpp_object_name = ""
         if isinstance(cpp_object, six.string_types):
             cpp_object_name = cpp_object
         else:
             cpp_object_name = cpp_object["name"]
 
-        matched = re.match(self._get_config(re_name)["re"], cpp_object_name)
+        matched = re.match(self._get_config(name_re)["re"], cpp_object_name)
         if matched is None:
-            error_message = self._get_config(re_name)["error"]
+            error_message = self._get_config(name_re)["error"]
             if len(error_message) > 0:
                 error_message = "%s : %s" % (
-                    ' '.join([rule_name.capitalize() for rule_name in re_name.split("_")]),
+                    ' '.join([rule_name.capitalize() for rule_name in name_re.split("_")]),
                     error_message)
 
             raise SyntaxError("%s: Name '%s' isn't matched with rule : %s!\n%s" % (
                 cpp_object["line_number"],
                 cpp_object_name,
-                re_name,
+                name_re,
                 error_message))
 
     def _validate_cpp_object(self, cpp_object):
