@@ -49,8 +49,12 @@ class Application(object):
             self.__args.output = self.__args.file_path
 
         self.__config = yaml.load(open(self.__args.config))
-        if "_base_" not in self.__config:
-            self.__config["_base_"] = {"re":"[a-zA-Z0-9_]+"}
+        old_base = self.__config["_base_"]
+        self.__config["_base_"] = {
+            "re":"[a-zA-Z0-9_]+",
+            "error": "",
+            }
+        self.__config["_base_"].update(old_base)
 
     def parse_define(self, adefine):
         matched = re.match(r"[^\w]*(\w+)(?:\((.*)\)|\s).*", adefine)
@@ -116,8 +120,17 @@ class Application(object):
 
         matched = re.match(self._get_config(re_name)["re"], cpp_object_name)
         if matched is None:
-            raise SyntaxError("%s: Name '%s' isn't matched with rule : %s!" % (
-                cpp_object["line_number"], cpp_object_name, re_name))
+            error_message = self._get_config(re_name)["error"]
+            if len(error_message) > 0:
+                error_message = "%s : %s" % (
+                    ' '.join([rule_name.capitalize() for rule_name in re_name.split("_")]),
+                    error_message)
+
+            raise SyntaxError("%s: Name '%s' isn't matched with rule : %s!\n%s" % (
+                cpp_object["line_number"],
+                cpp_object_name,
+                re_name,
+                error_message))
 
     def _validate_cpp_object(self, cpp_object):
         cpp_object_type = type(cpp_object)
