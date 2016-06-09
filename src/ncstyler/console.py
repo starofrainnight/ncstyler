@@ -3,6 +3,7 @@
 import argparse
 import CppHeaderParser
 import re
+import sys
 import yaml
 import copy
 import six
@@ -273,54 +274,61 @@ class Application(object):
             self._validate_name(cpp_object, "filename")
 
     def exec_(self):
-        with open(self.__args.file_path, "r") as source_file:
-            # For later parse by _validate_codes_of_cpp_method()
-            self._source_lines = source_file.readlines()
+        try:
 
-        parsed_info = CppHeaderParser.CppHeader(self.__args.file_path)
+            with open(self.__args.file_path, "r") as source_file:
+                # For later parse by _validate_codes_of_cpp_method()
+                self._source_lines = source_file.readlines()
 
-        # Verify File Names
-        filename = os.path.basename(self.__args.file_path)
-        cpp_object = CppFileName()
-        cpp_object["name"] = filename
-        self._validate_cpp_object(cpp_object)
+            parsed_info = CppHeaderParser.CppHeader(self.__args.file_path)
 
-        # Verify Define Names
-        for define_text in parsed_info.defines:
-            self._validate_cpp_object(self.parse_define(define_text))
-
-        # Verify Function Names
-        for cpp_object in parsed_info.functions:
+            # Verify File Names
+            filename = os.path.basename(self.__args.file_path)
+            cpp_object = CppFileName()
+            cpp_object["name"] = filename
             self._validate_cpp_object(cpp_object)
 
-        # Verify Class Names
-        for cpp_object in parsed_info.classes_order:
-            self._validate_cpp_object(cpp_object)
+            # Verify Define Names
+            for define_text in parsed_info.defines:
+                self._validate_cpp_object(self.parse_define(define_text))
 
-        # Verify Struct Names
-        for cpp_object in parsed_info.structs_order:
-            self._validate_cpp_object(cpp_object)
+            # Verify Function Names
+            for cpp_object in parsed_info.functions:
+                self._validate_cpp_object(cpp_object)
 
-        # Verify Enum Names
-        for cpp_object in parsed_info.enums:
-            self._validate_cpp_object(cpp_object)
+            # Verify Class Names
+            for cpp_object in parsed_info.classes_order:
+                self._validate_cpp_object(cpp_object)
 
-        # Verify Variable Names
-        for cpp_object in parsed_info.variables:
-            self._validate_cpp_object(cpp_object)
+            # Verify Struct Names
+            for cpp_object in parsed_info.structs_order:
+                self._validate_cpp_object(cpp_object)
 
-        for namespace in parsed_info.namespaces:
-            cpp_object = CppNamespace()
-            cpp_object["name"] = namespace
-            self._validate_cpp_object(cpp_object)
+            # Verify Enum Names
+            for cpp_object in parsed_info.enums:
+                self._validate_cpp_object(cpp_object)
 
-        # Verify Typdef Names
-        for cpp_object in parsed_info.typedefs:
-            self._validate_cpp_object(cpp_object)
+            # Verify Variable Names
+            for cpp_object in parsed_info.variables:
+                self._validate_cpp_object(cpp_object)
+
+            for namespace in parsed_info.namespaces:
+                cpp_object = CppNamespace()
+                cpp_object["name"] = namespace
+                self._validate_cpp_object(cpp_object)
+
+            # Verify Typdef Names
+            for cpp_object in parsed_info.typedefs:
+                self._validate_cpp_object(cpp_object)
+        except SyntaxError as e:
+            print(str(e))
+            return -1
+
+        return 0
 
 def main():
     a = Application()
-    a.exec_()
+    sys.exit(a.exec_())
 
 if __name__ == "__main__":
     # Execute only if run as a script
