@@ -186,13 +186,15 @@ class Application(object):
 
         matched = re.match(self._get_config(name_re)["re"], cpp_object_name)
         if matched is None:
+            filename = os.path.basename(self.__args.file_path)
             error_message = self._get_config(name_re)["error"]
             if len(error_message) > 0:
-                error_message = "%s : %s" % (
+                error_message = "%s %s" % (
                     ' '.join([rule_name.capitalize() for rule_name in name_re.split("_")]),
                     error_message)
 
-            raise SyntaxError("%s: Name '%s' isn't matched with rule : %s!\n%s" % (
+            raise SyntaxError("%s:%s:error: Name '%s' isn't matched with rule : %s! %s" % (
+                filename,
                 cpp_object["line_number"],
                 cpp_object_name,
                 name_re,
