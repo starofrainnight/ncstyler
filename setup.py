@@ -6,16 +6,6 @@ use_pydgutils()
 import os
 import os.path
 import sys
-import shutil
-import logging
-import fnmatch
-import glob
-import zipfile
-import shutil
-from six.moves import urllib
-import math
-import rabird.core.distutils
-import rabird.core.logging
 import pydgutils
 from setuptools import setup, find_packages
 
