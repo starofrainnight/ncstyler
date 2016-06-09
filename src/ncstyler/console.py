@@ -324,7 +324,7 @@ class Application(object):
                 self._validate_cpp_object(cpp_object)
         except SyntaxError as e:
             print(str(e))
-            return -1
+            return 1
 
         return 0
 
