@@ -111,6 +111,71 @@ class Application(object):
 
         return my_config
 
+    def _is_valid_variable(self, cpp_variable):
+        if cpp_variable["type"] == "return":
+            return False
+
+        if len(cpp_variable["type"]) <= 0:
+            return False
+
+        return True
+
+    def _validate_codes_of_cpp_method(self, cpp_method):
+        start_line_index = cpp_method["line_number"] - 1
+        # Extract cpp method codes
+        rest_lines = self._source_lines[start_line_index:]
+        content = '\n'.join(rest_lines)
+        code_lines = []
+        name_start_pos = content.index(cpp_method["name"])
+
+        parameters_start_pos = content.index('(', name_start_pos)
+        parameters_stop_pos = content.index(')', parameters_start_pos)
+
+        stack = []
+        i = content.index('{', parameters_stop_pos + 1)
+        skipped_lines = cpp_method["line_number"] + content.count("\n", 0, i) - 2
+
+        stack.append(i)
+        i += 1
+        first_i = i
+        last_i = 0
+        is_finding_block_comment = False
+        is_finding_single_comment = False
+        while (len(stack) > 0) and (i < len(content)):
+            c = content[i]
+
+            if is_finding_block_comment:
+                # If finding block comment, then skip all other searching
+                if (c == "*") and (content[i + 1] == "/"):
+                    is_finding_block_comment = False
+            elif (c == "/") and (content[i + 1] == "*"):
+                is_finding_block_comment = True
+            elif is_finding_single_comment:
+                # If finding single comment, then skip all other searching
+                if c == "\n":
+                    is_finding_single_comment = False
+            elif (c == "/") and (content[i + 1] == "/"):
+                is_finding_single_comment = True
+            elif c == "{":
+                stack.append(i)
+            elif c == "}":
+                last_i = i
+                del stack[len(stack) - 1]
+
+            i += 1
+
+        if len(stack) <= 0:
+            content = content[first_i:last_i]
+            parsed_info = CppHeaderParser.CppHeader(content, argType="string")
+            for avaraiable in parsed_info.variables:
+                avaraiable["line_number"] += skipped_lines
+
+            for avariable in parsed_info.variables:
+                if not self._is_valid_variable(avariable):
+                    continue
+
+                self._validate_name(avariable, "variant")
+
     def _validate_name(self, cpp_object, name_re):
         cpp_object_name = ""
         if isinstance(cpp_object, six.string_types):
@@ -158,6 +223,7 @@ class Application(object):
             self._validate_name(cpp_object, class_re)
 
             for amethod in cpp_object.get_all_methods():
+                self._validate_codes_of_cpp_method(amethod)
                 self._validate_name(amethod, class_method_re)
                 for aparameter in amethod["parameters"]:
                     self._validate_name(aparameter, class_method_argument_re)
@@ -185,14 +251,16 @@ class Application(object):
                 self._validate_name(amember, "enum_value")
 
         elif cpp_object_type == CppHeaderParser.CppVariable:
-            if cpp_object["static"]:
-                self._validate_name(cpp_object, "static_variant")
-            else:
-                self._validate_name(cpp_object, "global_variant")
+            if cpp_object["type"] != "return":
+                if cpp_object["static"]:
+                    self._validate_name(cpp_object, "static_variant")
+                else:
+                    self._validate_name(cpp_object, "global_variant")
 
         elif cpp_object_type == CppHeaderParser.CppMethod:
             # Exclude "main" function while parsing global function
             if cpp_object["name"] != "main":
+                self._validate_codes_of_cpp_method(cpp_object)
                 self._validate_name(cpp_object, "function")
 
         elif cpp_object_type == CppHeaderParser.CppUnion:
@@ -205,6 +273,10 @@ class Application(object):
             self._validate_name(cpp_object, "filename")
 
     def exec_(self):
+        with open(self.__args.file_path, "r") as source_file:
+            # For later parse by _validate_codes_of_cpp_method()
+            self._source_lines = source_file.readlines()
+
         parsed_info = CppHeaderParser.CppHeader(self.__args.file_path)
 
         # Verify File Names
