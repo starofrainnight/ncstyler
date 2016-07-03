@@ -1,0 +1,85 @@
+#
+# Name Styles
+#
+# String starts with $$ is an internal behavior
+#
+
+_base_:
+  re: ^[a-z0-9_]+$
+
+# argument:
+#   re: ^[a-z0-9_]+$
+#   word_sep: _
+
+variant:
+  re: ^[a-z0-9_]+$
+  error: "must lower case with underscores, for example : this_is_an_example."
+
+global_variant:
+  re: ^g_[a-z0-9][a-z0-9_]+$
+  error: "must lower case with underscores and prefix with 'g_', for example : g_this_is_an_example."
+
+static_variant:
+  re: ^s_[a-z0-9][a-z0-9_]+$
+
+function:
+  re: ^[a-z0-9_]+$
+  word_sep: _
+
+# function_argument:
+#   re: ^[a-z0-9_]+$
+
+# enum:
+#   re: ^[a-z0-9_]+_t$
+#   word_sep: _
+
+# enum_value:
+#   re: ^[a-z0-9_]+_t$
+#   word_sep: _
+
+class:
+  re: ^[a-z0-9_]+_t$
+  error: "must lower case with underscores, for example : this_is_an_example."
+
+class_variant:
+  re: ^m_[a-z0-9][a-z0-9_]+$
+  error: "must lower case with underscores and prefix with 'm_', for example : m_this_is_an_example."
+
+# class_method:
+#   re: ^[a-z0-9_]+$
+
+# class_method_argument:
+#   re: ^[a-z0-9_]+$
+
+# struct:
+#   re: ^[a-z0-9_]+_t$
+
+struct_variant:
+  re: ^(?!m_)[a-z0-9_]+$
+  error: "must lower case with underscores and must not prefix with 'm_', for example : this_is_an_example."
+
+# struct_method:
+#   re: ^[a-z0-9_]+$
+
+# struct_method_argument:
+#   re: ^[a-z0-9_]+$
+
+define:
+  re: ^[A-Z0-9_]+$
+  error: "must upper case with underscores, for example : THIS_IS_AN_EXAMPLE."
+
+define_function:
+  re: ^[A-Z0-9_]+$
+
+# define_function_argument:
+#   re: ^[a-z0-9_]+$
+
+# namespace:
+#   re: ^[a-z0-9_]+$
+
+# typdef:
+#   re: ^[a-z0-9_]+$
+
+filename:
+  re: ^[a-z0-9_]+\..*$
+  error: "must lower case with underscores, for example : this_is_an_example.cpp ."
