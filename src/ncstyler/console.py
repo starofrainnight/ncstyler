@@ -178,15 +178,9 @@ class Application(object):
 
         if len(stack) <= 0:
             content = content[first_i:last_i]
-            parsed_info = CppHeaderParser.CppHeader(content, argType="string")
-            for avaraiable in parsed_info.variables:
-                avaraiable["line_number"] += skipped_lines
-
-            for avariable in parsed_info.variables:
-                if not self._is_valid_variable(avariable):
-                    continue
-
-                self._validate_name(avariable, "variant")
+            founded = re.findall(r"(\w+)\s*=", content)
+            for aname in founded:
+                self._validate_name(aname, "variant")
 
     def _validate_name(self, cpp_object, name_re):
         cpp_object_name = ""
