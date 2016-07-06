@@ -73,6 +73,17 @@ class Application(object):
         result["parameters"] = parameters
         return result
 
+    def _get_argument_name(self, an_argument):
+        if isinstance(an_argument, six.string_types):
+            return an_argument
+
+        if len(an_argument["name"]) > 0:
+            return an_argument["name"]
+
+        # If it's a functor??
+        matched = re.match(r"^\w+\s*\(\w*::\*(\w+)\)\(.*$", an_argument["type"])
+        return matched.group(1)
+
     def _get_config(self, name):
         override_table = {
                 "class": "_base_",
@@ -229,7 +240,8 @@ class Application(object):
                 self._validate_codes_of_cpp_method(amethod)
                 self._validate_name(amethod, class_method_re)
                 for aparameter in amethod["parameters"]:
-                    self._validate_name(aparameter, class_method_argument_re)
+                    self._validate_name(self._get_argument_name(aparameter),
+                                        class_method_argument_re)
 
             for access_specifier in CppHeaderParser.supportedAccessSpecifier:
                 for amember in cpp_object["properties"][access_specifier]:
