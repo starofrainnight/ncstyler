@@ -189,6 +189,9 @@ class Application(object):
         cpp_object_name = ""
         if isinstance(cpp_object, six.string_types):
             cpp_object_name = cpp_object
+            cpp_object = dict()
+            cpp_object["name"] = cpp_object_name
+            cpp_object["line_number"] = -1
         else:
             cpp_object_name = cpp_object["name"]
 
