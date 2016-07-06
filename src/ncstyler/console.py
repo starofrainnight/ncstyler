@@ -180,7 +180,10 @@ class Application(object):
             content = content[first_i:last_i]
             founded = re.findall(r"(\w+)\s*=", content)
             for aname in founded:
-                self._validate_name(aname, "variant")
+                avariant = dict()
+                avariant["name"] = aname
+                avariant["line_number"] = cpp_method["line_number"]
+                self._validate_name(avariant, "variant")
 
     def _validate_name(self, cpp_object, name_re):
         cpp_object_name = ""
