@@ -73,6 +73,18 @@ class Application(object):
         result["parameters"] = parameters
         return result
 
+    def _is_special_method(self, amethod):
+        if isinstance(amethod, six.string_types):
+            amethod_name = amethod
+        else:
+            amethod_name = amethod["name"]
+
+        founded = re.findall(r"(?:^|[^\w]+)operator[^\w]+", amethod_name)
+        if len(founded) <= 0:
+            return False
+
+        return True
+
     def _get_argument_name(self, an_argument):
         if isinstance(an_argument, six.string_types):
             return an_argument
@@ -238,7 +250,8 @@ class Application(object):
 
             for amethod in cpp_object.get_all_methods():
                 self._validate_codes_of_cpp_method(amethod)
-                self._validate_name(amethod, class_method_re)
+                if not self._is_special_method(amethod):
+                    self._validate_name(amethod, class_method_re)
                 for aparameter in amethod["parameters"]:
                     self._validate_name(self._get_argument_name(aparameter),
                                         class_method_argument_re)
@@ -276,7 +289,8 @@ class Application(object):
             # Exclude "main" function while parsing global function
             if cpp_object["name"] != "main":
                 self._validate_codes_of_cpp_method(cpp_object)
-                self._validate_name(cpp_object, "function")
+                if not self._is_special_method(amethod):
+                    self._validate_name(cpp_object, "function")
 
         elif cpp_object_type == CppHeaderParser.CppUnion:
             self._validate_name(cpp_object, "union")
