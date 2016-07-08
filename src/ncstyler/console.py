@@ -302,10 +302,24 @@ class Application(object):
 
         elif cpp_object_type == CppHeaderParser.CppMethod:
             # Exclude "main" function while parsing global function
-            if cpp_object["name"] != "main":
+            while True:
                 self._validate_codes_of_cpp_method(cpp_object)
-                if not self._is_special_method(cpp_object):
-                    self._validate_name(cpp_object, "function")
+                if cpp_object["name"] == "main":
+                    break
+
+                if self._is_special_method(cpp_object):
+                    break
+
+                if len(cpp_object["class"]) <= 0:
+                    self._validate_name(cpp_object, "class_method")
+                    break
+
+                if cpp_object["class"] == cpp_object["name"]:
+                    # Constructor / Destructor will the same with class name
+                    break
+
+                self._validate_name(cpp_object, "function")
+                break
 
         elif cpp_object_type == CppHeaderParser.CppUnion:
             self._validate_name(cpp_object, "union")
