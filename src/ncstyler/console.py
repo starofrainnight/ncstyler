@@ -144,13 +144,27 @@ class Application(object):
 
         return True
 
+    def _get_cpp_method_re(self, name):
+        prefix = "operator"
+        if not name.startswith(prefix):
+            return name
+
+        # Operator methods
+        chars = []
+        for achar in name[len(prefix):]:
+            chars.append("\\s*\\")
+            chars.append(achar)
+
+        return "operator%s" % ''.join(chars)
+
     def _validate_codes_of_cpp_method(self, cpp_method):
         start_line_index = cpp_method["line_number"] - 1
         # Extract cpp method codes
         rest_lines = self._source_lines[start_line_index:]
         content = '\n'.join(rest_lines)
         code_lines = []
-        name_start_pos = content.index(cpp_method["name"])
+        name_re = self._get_cpp_method_re(cpp_method["name"])
+        name_start_pos = re.search(name_re, content).span()[0]
 
         parameters_start_pos = content.index('(', name_start_pos)
         parameters_stop_pos = content.index(')', parameters_start_pos)
