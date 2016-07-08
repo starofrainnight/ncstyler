@@ -265,7 +265,8 @@ class Application(object):
             for amethod in cpp_object.get_all_methods():
                 self._validate_codes_of_cpp_method(amethod)
                 if not self._is_special_method(amethod):
-                    self._validate_name(amethod, class_method_re)
+                    if amethod["name"] != cpp_object["name"]:
+                        self._validate_name(amethod, class_method_re)
                 for aparameter in amethod["parameters"]:
                     self._validate_name(self._get_argument_name(aparameter),
                                         class_method_argument_re)
