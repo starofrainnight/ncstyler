@@ -304,7 +304,7 @@ class Application(object):
             # Exclude "main" function while parsing global function
             if cpp_object["name"] != "main":
                 self._validate_codes_of_cpp_method(cpp_object)
-                if not self._is_special_method(amethod):
+                if not self._is_special_method(cpp_object):
                     self._validate_name(cpp_object, "function")
 
         elif cpp_object_type == CppHeaderParser.CppUnion:
