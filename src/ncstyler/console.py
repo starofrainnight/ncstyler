@@ -252,6 +252,9 @@ class Application(object):
                 name_re,
                 error_message))
 
+    def _get_class_realname(self, class_name):
+        return re.match("(\w+).*", class_name).group(1)
+
     def _validate_cpp_object(self, cpp_object):
         cpp_object_type = type(cpp_object)
 
@@ -282,7 +285,7 @@ class Application(object):
                 if matched is None:
                     self._validate_codes_of_cpp_method(amethod)
                     if not self._is_special_method(amethod):
-                        if amethod["name"] != cpp_object["name"]:
+                        if amethod["name"] != self._get_class_realname(cpp_object["name"]):
                             self._validate_name(amethod, class_method_re)
                     for aparameter in amethod["parameters"]:
                         an_object = dict()
@@ -327,7 +330,7 @@ class Application(object):
             if cpp_object["type"] != "return":
                 if cpp_object["static"]:
                     self._validate_name(cpp_object, "static_variant")
-                else:
+                elif cpp_object["type"] not in ["class", "struct", "union"]:
                     self._validate_name(cpp_object, "global_variant")
 
         elif cpp_object_type == CppHeaderParser.CppMethod:
@@ -344,7 +347,7 @@ class Application(object):
                     self._validate_name(cpp_object, "function")
                     break
 
-                if cpp_object["class"] == cpp_object["name"]:
+                if self._get_class_realname(cpp_object["class"]) == cpp_object["name"]:
                     # Constructor / Destructor will the same with class name
                     break
 
