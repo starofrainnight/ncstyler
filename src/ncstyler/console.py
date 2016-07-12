@@ -99,7 +99,7 @@ class Application(object):
         matched = re.match(r"^\w+\s*\(\w*::\*(\w+)\)\(.*$", an_argument["type"])
         if matched is None:
             # with normal "function" style
-            matched = re.match(r".*\(.*\W(\w+)\W.*\).*", an_argument["type"])
+            matched = re.match(r"[^\(]*\([^\)]*\W(\w+)\W.*\).*", an_argument["type"])
         return matched.group(1)
 
     def _get_config(self, name):
@@ -278,7 +278,7 @@ class Application(object):
             self._validate_name(cpp_object, class_re)
 
             for amethod in cpp_object.get_all_methods():
-                matched = re.match(r".*typedef.*\(.*\W(\w+)\W.*\).*", amethod["debug"])
+                matched = re.match(r".*typedef\W[^\(]*\([^\)]*\W(\w+)\W.*\).*", amethod["debug"])
                 if matched is None:
                     self._validate_codes_of_cpp_method(amethod)
                     if not self._is_special_method(amethod):
