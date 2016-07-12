@@ -310,15 +310,15 @@ class Application(object):
                 if self._is_special_method(cpp_object):
                     break
 
-                if len(cpp_object["class"]) <= 0:
-                    self._validate_name(cpp_object, "class_method")
+                if (cpp_object["class"] is None) or (len(cpp_object["class"]) <= 0):
+                    self._validate_name(cpp_object, "function")
                     break
 
                 if cpp_object["class"] == cpp_object["name"]:
                     # Constructor / Destructor will the same with class name
                     break
 
-                self._validate_name(cpp_object, "function")
+                self._validate_name(cpp_object, "class_method")
                 break
 
         elif cpp_object_type == CppHeaderParser.CppUnion:
