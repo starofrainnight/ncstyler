@@ -147,7 +147,7 @@ class Application(object):
     def _get_cpp_method_re(self, name):
         prefix = "operator"
         if not name.startswith(prefix):
-            return name
+            return re.escape(name)
 
         # Operator methods
         chars = []
@@ -268,22 +268,28 @@ class Application(object):
             self._validate_name(cpp_object, class_re)
 
             for amethod in cpp_object.get_all_methods():
-                self._validate_codes_of_cpp_method(amethod)
-                if not self._is_special_method(amethod):
-                    if amethod["name"] != cpp_object["name"]:
-                        self._validate_name(amethod, class_method_re)
-                for aparameter in amethod["parameters"]:
-                    an_object = dict()
-                    an_object["line_number"] = aparameter["line_number"]
-                    if (aparameter["type"].endswith("::*")
-                        and (")" in aparameter["name"])):
-                        an_object["name"] = re.match(r"(\w+).*", aparameter["name"]).group(1)
-                        self._validate_name(an_object,
-                                            class_method_re)
-                    else:
-                        an_object["name"] = self._get_argument_name(aparameter)
-                        self._validate_name(an_object,
-                                            class_method_argument_re)
+                matched = re.match(r".*typedef.*\(.*\W(\w+)\W.*\).*", amethod["debug"])
+                if matched is None:
+                    self._validate_codes_of_cpp_method(amethod)
+                    if not self._is_special_method(amethod):
+                        if amethod["name"] != cpp_object["name"]:
+                            self._validate_name(amethod, class_method_re)
+                    for aparameter in amethod["parameters"]:
+                        an_object = dict()
+                        an_object["line_number"] = aparameter["line_number"]
+                        if (aparameter["type"].endswith("::*")
+                            and (")" in aparameter["name"])):
+                            an_object["name"] = re.match(r"(\w+).*", aparameter["name"]).group(1)
+                            self._validate_name(an_object,
+                                                class_method_re)
+                        else:
+                            an_object["name"] = self._get_argument_name(aparameter)
+                            self._validate_name(an_object,
+                                                class_method_argument_re)
+                else:
+                    self._validate_name(
+                        {"name":matched.group(1), "line_number":amethod["line_number"]},
+                        "typdef")
 
             for access_specifier in CppHeaderParser.supportedAccessSpecifier:
                 for amember in cpp_object["properties"][access_specifier]:
