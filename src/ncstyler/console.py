@@ -83,7 +83,7 @@ class Application(object):
         if len(founded) <= 0:
             if re.match(r".*\Woperator\W.*", amethod["debug"]) is not None:
                 return True
-                
+
             return False
 
         return True
@@ -123,7 +123,7 @@ class Application(object):
                 "struct_method": "class_method",
                 "class_variant": "variant",
                 "struct_variant": "class_variant",
-                "typdef": "class",
+                "typedef": "class",
                 "struct": "class",
                 "enum": "class",
                 "enum_value": "define",
@@ -299,7 +299,7 @@ class Application(object):
                 else:
                     self._validate_name(
                         {"name":matched.group(1), "line_number":amethod["line_number"]},
-                        "typdef")
+                        "typedef")
 
             for access_specifier in CppHeaderParser.supportedAccessSpecifier:
                 for amember in cpp_object["properties"][access_specifier]:
