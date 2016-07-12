@@ -221,6 +221,11 @@ class Application(object):
         else:
             cpp_object_name = cpp_object["name"]
 
+        # Parse union like names
+        splitted = cpp_object_name.split()
+        if len(splitted) > 1:
+            cpp_object_name = splitted[-1]
+
         matched = re.match(self._get_config(name_re)["re"], cpp_object_name)
         if matched is None:
             filename = os.path.basename(self.__args.file_path)
