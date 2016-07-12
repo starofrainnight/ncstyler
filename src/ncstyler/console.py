@@ -81,6 +81,9 @@ class Application(object):
 
         founded = re.findall(r"(?:^|[^\w]+)operator[^\w]+", amethod_name)
         if len(founded) <= 0:
+            if re.match(r".*\Woperator\W.*", amethod["debug"]) is not None:
+                return True
+                
             return False
 
         return True
