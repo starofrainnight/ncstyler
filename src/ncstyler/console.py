@@ -92,8 +92,11 @@ class Application(object):
         if len(an_argument["name"]) > 0:
             return an_argument["name"]
 
-        # If it's a functor??
+        # If it's a functor?? with "class name::function" style
         matched = re.match(r"^\w+\s*\(\w*::\*(\w+)\)\(.*$", an_argument["type"])
+        if matched is None:
+            # with normal "function" style
+            matched = re.match(r".*\(.*\W(\w+)\W.*\).*", an_argument["type"])
         return matched.group(1)
 
     def _get_config(self, name):
@@ -152,8 +155,12 @@ class Application(object):
         # Operator methods
         chars = []
         for achar in name[len(prefix):]:
-            chars.append("\\s*\\")
-            chars.append(achar)
+            chars.append("\\s*")
+            if achar.isalnum():
+                chars.append(achar)
+            else:
+                chars.append("\\")
+                chars.append(achar)
 
         return "operator%s" % ''.join(chars)
 
