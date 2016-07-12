@@ -273,8 +273,17 @@ class Application(object):
                     if amethod["name"] != cpp_object["name"]:
                         self._validate_name(amethod, class_method_re)
                 for aparameter in amethod["parameters"]:
-                    self._validate_name(self._get_argument_name(aparameter),
-                                        class_method_argument_re)
+                    an_object = dict()
+                    an_object["line_number"] = aparameter["line_number"]
+                    if (aparameter["type"].endswith("::*")
+                        and (")" in aparameter["name"])):
+                        an_object["name"] = re.match(r"(\w+).*", aparameter["name"]).group(1)
+                        self._validate_name(an_object,
+                                            class_method_re)
+                    else:
+                        an_object["name"] = self._get_argument_name(aparameter)
+                        self._validate_name(an_object,
+                                            class_method_argument_re)
 
             for access_specifier in CppHeaderParser.supportedAccessSpecifier:
                 for amember in cpp_object["properties"][access_specifier]:
