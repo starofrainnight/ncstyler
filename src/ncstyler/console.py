@@ -304,15 +304,38 @@ class Application(object):
                     self._validate_codes_of_cpp_method(amethod)
                     if not self._is_special_method(amethod):
                         if amethod["name"] != self._get_class_realname(cpp_object["name"]):
-                            self._validate_name(amethod, class_method_re)
+                            try:
+                                self._validate_name(amethod, class_method_re)
+                            except SyntaxError:
+                                is_need_reraise = True
+                                try:
+                                    self._validate_name(amethod, "define_function")
+                                    is_need_reraise = False
+                                except SyntaxError:
+                                    pass
+
+                                if is_need_reraise:
+                                    raise
+
                     for aparameter in amethod["parameters"]:
                         an_object = dict()
                         an_object["line_number"] = aparameter["line_number"]
                         if (aparameter["type"].endswith("::*")
                             and (")" in aparameter["name"])):
                             an_object["name"] = re.match(r"(\w+).*", aparameter["name"]).group(1)
-                            self._validate_name(an_object,
-                                                class_method_re)
+                            try:
+                                self._validate_name(an_object,
+                                                    class_method_re)
+                            except SyntaxError:
+                                is_need_reraise = True
+                                try:
+                                    self._validate_name(amethod, "define_function")
+                                    is_need_reraise = False
+                                except SyntaxError:
+                                    pass
+
+                                if is_need_reraise:
+                                    raise
                         else:
                             an_object["name"] = self._get_argument_name(aparameter)
                             self._validate_name(an_object,
