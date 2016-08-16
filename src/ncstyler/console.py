@@ -228,7 +228,7 @@ class Application(object):
 
         if len(stack) <= 0:
             content = content[first_i:last_i]
-            founded = re.findall(r"(\w+)\s*=[^=]", content)
+            founded = re.findall(r"\w+\W+(\w+)\s*=[^=]", content)
             for aname in founded:
                 avariant = dict()
                 avariant["name"] = aname
