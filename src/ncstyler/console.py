@@ -100,7 +100,11 @@ class Application(object):
         if matched is None:
             # with normal "function" style
             matched = re.match(r"[^\(]*\([^\)]*\W(\w+)\W.*\).*", an_argument["type"])
-        return matched.group(1)
+
+        if matched is None:
+            return ""
+        else:
+            return matched.group(1)
 
     def _get_config(self, name):
         override_table = {
@@ -235,6 +239,10 @@ class Application(object):
         splitted = cpp_object_name.split()
         if len(splitted) > 1:
             cpp_object_name = splitted[-1]
+
+        if len(cpp_object_name) <= 0:
+            # Does not have valid name, we must not check it .
+            return
 
         matched = re.match(self._get_config(name_re)["re"], cpp_object_name)
         if matched is None:
