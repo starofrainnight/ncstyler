@@ -59,7 +59,7 @@ class Application(object):
         self.__config["_base_"].update(old_base)
 
     def parse_define(self, adefine):
-        matched = re.match(r"[^\w]*(\w+)(?:\((.*)\)|\s*).*", adefine)
+        matched = re.match(r"[^\w]*(\w+)(?:\(([^\)]*)\)|\s*).*", adefine)
         name = matched.group(1)
         parameters = []
         if matched.group(2) is not None:
