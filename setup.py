@@ -17,7 +17,7 @@ source_dir = pydgutils.process()
 # Exclude the original source package, only accept the preprocessed package!
 our_packages = find_packages(where=source_dir)
 
-our_requires = []
+our_requires = ["CppHeaderParser"]
 
 long_description=(
      open("README.rst", "r").read()
