@@ -184,7 +184,16 @@ class Application(object):
         parameters_stop_pos = content.index(')', parameters_start_pos)
 
         stack = []
-        i = content.index('{', parameters_stop_pos + 1)
+
+        try:
+            i = content.index('{', parameters_stop_pos + 1)
+        except ValueError:
+            return;
+
+        semicolonPos = content.index(';', parameters_stop_pos + 1)
+        if semicolonPos <= i:
+            return;
+
         skipped_lines = cpp_method["line_number"] + content.count("\n", 0, i) - 2
 
         stack.append(i)
