@@ -8,6 +8,7 @@ import yaml
 import copy
 import six
 import os.path
+import traceback
 
 class CppDefine(dict):
     def __init__(self):
@@ -81,7 +82,7 @@ class Application(object):
 
         founded = re.findall(r"(?:^|[^\w]+)operator[^\w]+", amethod_name)
         if len(founded) <= 0:
-            if re.match(r".*\Woperator\W.*", amethod["debug"]) is not None:
+            if re.match(r"(?:^|.*\W)operator\W.*", amethod["debug"]) is not None:
                 return True
 
             return False
@@ -227,7 +228,7 @@ class Application(object):
 
         if len(stack) <= 0:
             content = content[first_i:last_i]
-            founded = re.findall(r"(\w+)\s*=", content)
+            founded = re.findall(r"(\w+)\s*=[^=]", content)
             for aname in founded:
                 avariant = dict()
                 avariant["name"] = aname
