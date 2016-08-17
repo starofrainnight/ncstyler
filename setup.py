@@ -8,6 +8,7 @@ import os.path
 import sys
 import pydgutils
 from setuptools import setup, find_packages
+from pip.req import parse_requirements
 
 package_name = 'ncstyler'
 
@@ -17,7 +18,9 @@ source_dir = pydgutils.process()
 # Exclude the original source package, only accept the preprocessed package!
 our_packages = find_packages(where=source_dir)
 
-our_requires = ["CppHeaderParser"]
+# parse_requirements() returns generator of pip.req.InstallRequirement objects
+requirements = parse_requirements("./requirements.txt", session=False)
+requirements = [str(ir.req) for ir in requirements]
 
 long_description=(
      open("README.rst", "r").read()
@@ -43,7 +46,7 @@ setup(
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Libraries",
     ],
-    install_requires=our_requires,
+    install_requires=requirements,
     package_dir = {"": source_dir},
     packages=our_packages,
     entry_points = {
