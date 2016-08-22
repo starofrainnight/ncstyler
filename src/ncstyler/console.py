@@ -191,9 +191,13 @@ class Application(object):
         except ValueError:
             return;
 
-        semicolonPos = content.index(';', parameters_stop_pos + 1)
-        if semicolonPos <= i:
-            return;
+        try:
+            semicolonPos = content.index(';', parameters_stop_pos + 1)
+            if semicolonPos <= i:
+                return;
+        except ValueError:
+            # Not found a semicolon, just ignored.
+            pass
 
         skipped_lines = cpp_method["line_number"] + content.count("\n", 0, i) - 2
 
@@ -393,8 +397,11 @@ class Application(object):
 
                         cpp_object["name"] = matched.group(2)
                         self._validate_name(cpp_object, "class_method")
-                    else:
+                    elif len(cpp_object["returns"]) > 0:
+                        # If a function does not have return value(at least
+                        # "void"), it maybe macro invokes.
                         self._validate_name(cpp_object, "function")
+
                     break
 
                 if self._get_class_realname(cpp_object["class"]) == cpp_object["name"]:
