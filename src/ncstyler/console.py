@@ -353,10 +353,10 @@ class Application(object):
                         self._validate_name(amember, class_variant_re)
 
                 for amember in cpp_object["structs"][access_specifier]:
-                    self._validate_cpp_object(amember, "struct")
+                    self._validate_cpp_object(amember)
 
                 for amember in cpp_object["enums"][access_specifier]:
-                    self._validate_cpp_object(amember, "enum")
+                    self._validate_cpp_object(amember)
 
         elif cpp_object_type == CppHeaderParser.CppStruct:
             self._validate_name(cpp_object, "struct")
@@ -385,7 +385,16 @@ class Application(object):
                     break
 
                 if (cpp_object["class"] is None) or (len(cpp_object["class"]) <= 0):
-                    self._validate_name(cpp_object, "function")
+                    if ">" in cpp_object["name"]:
+                        regex = r"^[^<:]*?(?:(\w+)::)?(\w+)\s*<"
+                        matched = re.search(regex, cpp_object["debug"])
+                        if matched.group(1) is not None:
+                            cpp_object["class"] = matched.group(1)
+
+                        cpp_object["name"] = matched.group(2)
+                        self._validate_name(cpp_object, "class_method")
+                    else:
+                        self._validate_name(cpp_object, "function")
                     break
 
                 if self._get_class_realname(cpp_object["class"]) == cpp_object["name"]:
