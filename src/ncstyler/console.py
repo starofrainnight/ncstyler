@@ -400,7 +400,11 @@ class Application(object):
                     elif len(cpp_object["returns"]) > 0:
                         # If a function does not have return value(at least
                         # "void"), it maybe macro invokes.
-                        self._validate_name(cpp_object, "function")
+
+                        # FIXME: We just ignored this situation:
+                        # Code Snippets: static RSignal<void(int)> sReceived;
+                        if "<" not in cpp_object["name"]:
+                            self._validate_name(cpp_object, "function")
 
                     break
 
