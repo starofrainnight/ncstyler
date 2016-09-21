@@ -41,6 +41,7 @@ class Application(object):
             help="Configuration file path (In YAML format)",
             required=True)
         parser.add_argument("-o", "--output", help="Output file path")
+        parser.add_argument("-d", "--debug", action='store_true', help="Print trace stack")
         parser.add_argument("file_path", help="Source file path")
 
         self.__args = parser.parse_args()
@@ -266,6 +267,9 @@ class Application(object):
                 error_message = "%s %s" % (
                     ' '.join([rule_name.capitalize() for rule_name in name_re.split("_")]),
                     error_message)
+
+            if self.__args.debug:
+                traceback.print_stack()
 
             raise SyntaxError("%s:%s:error: Name '%s' isn't matched with rule : %s! %s" % (
                 filename,
