@@ -249,6 +249,10 @@ class Application(object):
             cpp_object["line_number"] = -1
         else:
             cpp_object_name = cpp_object["name"]
+            if '<' in cpp_object_name:
+                matched = re.match(".*?(\w+)\W+$", cpp_object["debug"])
+                if matched is not None:
+                    cpp_object_name = matched.group(1)
 
         # Parse union like names
         splitted = cpp_object_name.split()
@@ -258,6 +262,7 @@ class Application(object):
         if len(cpp_object_name) <= 0:
             # Does not have valid name, we must not check it .
             return
+
 
         matched = re.match(self._get_config(name_re)["re"], cpp_object_name)
         if matched is None:
