@@ -249,7 +249,7 @@ class Application(object):
             cpp_object["line_number"] = -1
         else:
             cpp_object_name = cpp_object["name"]
-            if '<' in cpp_object_name:
+            if ('<' in cpp_object_name) and ("debug" in cpp_object):
                 matched = re.match(".*?(\w+)\W+$", cpp_object["debug"])
                 if matched is not None:
                     cpp_object_name = matched.group(1)
