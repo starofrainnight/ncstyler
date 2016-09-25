@@ -316,7 +316,9 @@ class Application(object):
                 if matched is None:
                     self._validate_codes_of_cpp_method(amethod)
                     if not self._is_special_method(amethod):
-                        if amethod["name"] != self._get_class_realname(cpp_object["name"]):
+                        if ((amethod["name"] != self._get_class_realname(cpp_object["name"]))
+                            and (not amethod.get("constructor", False))
+                            and (not amethod.get("destructor", False))):
                             try:
                                 self._validate_name(amethod, class_method_re)
                             except SyntaxError:
@@ -360,10 +362,17 @@ class Application(object):
 
             for access_specifier in CppHeaderParser.supportedAccessSpecifier:
                 for amember in cpp_object["properties"][access_specifier]:
-                    if amember["static"]:
-                        self._validate_name(amember, "static_variant")
-                    else:
-                        self._validate_name(amember, class_variant_re)
+                    is_skip_validate = False
+                    if ("type" in amember) and (amember["type"] is not None):
+                        internal_predeclares = ["class", "struct", "union"]
+                        if amember["type"] in internal_predeclares:
+                            is_skip_validate = True
+
+                    if not is_skip_validate:
+                        if amember["static"]:
+                            self._validate_name(amember, "static_variant")
+                        else:
+                            self._validate_name(amember, class_variant_re)
 
                 for amember in cpp_object["structs"][access_specifier]:
                     self._validate_cpp_object(amember)
