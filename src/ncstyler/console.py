@@ -110,31 +110,31 @@ class Application(object):
 
     def _get_config(self, name):
         override_table = {
-                "class": "_base_",
-                "function": "_base_",
-                "variant": "_base_",
-                "namespace": "_base_",
-                "define": "_base_",
-                "filename": "_base_", # Special config use to define filename rule
+            "class": "_base_",
+            "function": "_base_",
+            "variant": "_base_",
+            "namespace": "_base_",
+            "define": "_base_",
+            "filename": "_base_", # Special config use to define filename rule
 
-                "argument": "variant",
-                "static_variant": "variant",
-                "global_variant": "variant",
-                "function_argument": "argument",
-                "class_method_argument": "function_argument",
-                "struct_method_argument": "class_method_argument",
-                "define_function_argument": "function_argument",
-                "define_function": "function",
-                "class_method": "function",
-                "struct_method": "class_method",
-                "class_variant": "variant",
-                "struct_variant": "class_variant",
-                "typedef": "class",
-                "struct": "class",
-                "enum": "class",
-                "enum_value": "define",
-                "union": "struct",
-            }
+            "argument": "variant",
+            "static_variant": "variant",
+            "global_variant": "variant",
+            "function_argument": "argument",
+            "class_method_argument": "function_argument",
+            "struct_method_argument": "class_method_argument",
+            "define_function_argument": "function_argument",
+            "define_function": "function",
+            "class_method": "function",
+            "struct_method": "class_method",
+            "class_variant": "variant",
+            "struct_variant": "class_variant",
+            "typedef": "class",
+            "struct": "class",
+            "enum": "class",
+            "enum_value": "define",
+            "union": "struct",
+        }
 
         my_config = dict()
 
