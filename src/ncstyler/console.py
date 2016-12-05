@@ -250,7 +250,7 @@ class Application(object):
         elif "name" in cpp_object:
             cpp_object_name = cpp_object["name"]
             if ('<' in cpp_object_name) and ("debug" in cpp_object):
-                matched = re.match(".*?(\w+)\W+$", cpp_object["debug"])
+                matched = re.match(r".*?(\w+)\W+$", cpp_object["debug"])
                 if matched is not None:
                     cpp_object_name = matched.group(1)
         else:
@@ -286,7 +286,7 @@ class Application(object):
                 error_message))
 
     def _get_class_realname(self, class_name):
-        return re.match("(\w+).*", class_name).group(1)
+        return re.match(r"(\w+).*", class_name).group(1)
 
     def _validate_cpp_object(self, cpp_object):
         cpp_object_type = type(cpp_object)
