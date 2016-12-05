@@ -247,12 +247,14 @@ class Application(object):
             cpp_object = dict()
             cpp_object["name"] = cpp_object_name
             cpp_object["line_number"] = -1
-        else:
+        elif "name" in cpp_object:
             cpp_object_name = cpp_object["name"]
             if ('<' in cpp_object_name) and ("debug" in cpp_object):
                 matched = re.match(".*?(\w+)\W+$", cpp_object["debug"])
                 if matched is not None:
                     cpp_object_name = matched.group(1)
+        else:
+            return
 
         # Parse union like names
         splitted = cpp_object_name.split()
