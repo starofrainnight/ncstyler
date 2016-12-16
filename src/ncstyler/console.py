@@ -396,7 +396,11 @@ class Application(object):
                 if cpp_object["static"]:
                     self._validate_name(cpp_object, "static_variant")
                 elif cpp_object["type"] not in ["class", "struct", "union"]:
-                    self._validate_name(cpp_object, "global_variant")
+                    if not cpp_object["type"].endswith("::"):
+                        # Don't parse variable that implemented outside of
+                        # template class. It's already be parsed when parsing
+                        # the class.
+                        self._validate_name(cpp_object, "global_variant")
 
         elif cpp_object_type == CppHeaderParser.CppMethod:
             # Exclude "main" function while parsing global function
