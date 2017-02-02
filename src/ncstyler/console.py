@@ -388,7 +388,15 @@ class Application(object):
         elif cpp_object_type == CppHeaderParser.CppEnum:
             self._validate_name(cpp_object, "enum")
 
+            line_number = -1
+            if "line_number" in cpp_object:
+                line_number = cpp_object["line_number"]
+
             for amember in cpp_object["values"]:
+                # Use parent line number if enum value does not have it's line
+                # number
+                if "line_number" not in amember:
+                    amember["line_number"] = line_number
                 self._validate_name(amember, "enum_value")
 
         elif cpp_object_type == CppHeaderParser.CppVariable:
