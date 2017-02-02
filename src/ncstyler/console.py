@@ -413,6 +413,11 @@ class Application(object):
         elif cpp_object_type == CppHeaderParser.CppMethod:
             # Exclude "main" function while parsing global function
             while True:
+                # FIXME: Parse special case : "struct RArraySize <T ( & ) [ N ]> {"
+                if "debug" in cpp_object:
+                    if re.match(r".*\>\s*{$", cpp_object["debug"]) is not None:
+                        break
+
                 self._validate_codes_of_cpp_method(cpp_object)
                 if cpp_object["name"] == "main":
                     break
