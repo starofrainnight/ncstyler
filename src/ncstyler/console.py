@@ -501,7 +501,9 @@ class Application(object):
 
             # Verify Variable Names
             for cpp_object in parsed_info.variables:
-                self._validate_cpp_object(cpp_object)
+                # Avoid checking member variable inside function body.
+                if '{' not in cpp_object['type']:
+                    self._validate_cpp_object(cpp_object)
 
             for namespace in parsed_info.namespaces:
                 cpp_object = CppNamespace()
