@@ -516,7 +516,11 @@ class Application(object):
         except SyntaxError as e:
             print(str(e))
             return 1
-
+        except CppHeaderParser.CppHeaderParser.CppParseError as e:
+            # CppHeaderParser can't parse this file, but we should pass it, this
+            # is the CppHeaderParser's problem.
+            print(str(e))
+            return 0
         return 0
 
 def main():
