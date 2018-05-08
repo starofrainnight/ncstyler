@@ -5,7 +5,10 @@ use_pydgutils()
 
 import pydgutils
 from setuptools import setup, find_packages
-from pip.req import parse_requirements
+try:
+    from pip.req import parse_requirements
+except:
+    from pip._internal.req import parse_requirements
 
 package_name = 'ncstyler'
 
@@ -19,11 +22,11 @@ our_packages = find_packages(where=source_dir)
 requirements = parse_requirements("./requirements.txt", session=False)
 requirements = [str(ir.req) for ir in requirements]
 
-long_description=(
-     open("README.rst", "r").read()
-     + "\n" +
-     open("CHANGES.rst", "r").read()
-     )
+long_description = (
+    open("README.rst", "r").read()
+    + "\n" +
+    open("CHANGES.rst", "r").read()
+)
 
 setup(
     name=package_name,
@@ -44,10 +47,10 @@ setup(
         "Topic :: Software Development :: Libraries",
     ],
     install_requires=requirements,
-    package_dir = {"": source_dir},
+    package_dir={"": source_dir},
     packages=our_packages,
-    entry_points = {
+    entry_points={
         'console_scripts': ['ncstyler=ncstyler.console:main'],
     },
-    zip_safe=False, # Unpack the egg downloaded_file during installation.
-    )
+    zip_safe=False,  # Unpack the egg downloaded_file during installation.
+)
